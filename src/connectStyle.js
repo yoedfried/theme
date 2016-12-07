@@ -144,7 +144,11 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
       }
 
       setWrappedInstance(component) {
-        this.wrappedInstance = component;
+        if(component._root) {
+          this._root = component._root;
+        } else {
+          this._root = component;
+        }
       }
 
       hasStyleNameChanged(nextProps, styleNames) {
