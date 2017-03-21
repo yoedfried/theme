@@ -150,12 +150,12 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
           resolvedStyle = this.resolveStyle(context, props, styleNames);
         }
 
-         _.merge(resolvedStyle, style);
+         const finalStyle = _.merge(resolvedStyle, style);
 
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.resolveConnectedComponentStyle = this.resolveConnectedComponentStyle.bind(this);
         this.state = {
-          style: getConcreteStyle(resolvedStyle),
+          style: getConcreteStyle(finalStyle),
           // AddedProps are additional WrappedComponent props
           // Usually they are set trough alternative ways,
           // such as theme style, or trough options
@@ -209,10 +209,10 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
             resolvedStyle = this.resolveStyle(nextContext, nextProps, styleNames);
           }
 
-          _.merge(resolvedStyle, style);
+          const finalStyle = _.merge(resolvedStyle, style);
 
           this.setState({
-            style: getConcreteStyle(resolvedStyle),
+            style: getConcreteStyle(finalStyle),
             // childrenStyle: resolvedStyle.childrenStyle,
             styleNames,
           });
