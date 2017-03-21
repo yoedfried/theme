@@ -200,7 +200,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
 
       componentWillReceiveProps(nextProps, nextContext) {
         const styleNames = this.getStyleNames(nextProps);
-        const style = props.style;
+        const style = nextProps.style;
         let resolvedStyle = {};
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
           if(nextContext.parentPath) {
