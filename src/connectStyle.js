@@ -150,7 +150,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
           resolvedStyle = this.resolveStyle(context, props, styleNames);
         }
 
-         const finalStyle = _.merge(resolvedStyle, style);
+         const finalStyle = _.merge({}, resolvedStyle, style);
 
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.resolveConnectedComponentStyle = this.resolveConnectedComponentStyle.bind(this);
@@ -209,7 +209,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
             resolvedStyle = this.resolveStyle(nextContext, nextProps, styleNames);
           }
 
-          const finalStyle = _.merge(resolvedStyle, style);
+          const finalStyle = _.merge({}, resolvedStyle, style);
 
           this.setState({
             style: getConcreteStyle(finalStyle),
