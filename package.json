@@ -1,7 +1,7 @@
 {
   "name": "@shoutem/theme",
   "version": "0.8.8",
-  "main": "dist/src/index.js",
+  "main": "dist/index.js",
   "description": "Style your components in one place.",
   "dependencies": {
     "hoist-non-react-statics": "^1.0.5",
