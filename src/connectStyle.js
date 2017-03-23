@@ -145,12 +145,12 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         const style = props.style;
         let resolvedStyle = {};
         if(context.parentPath) {
-          resolvedStyle = this.getOrSetStylesInCache(context, props, styleNames, [...context.parentPath, componentDisplayName, ...this.getStyleNames()]);
+          resolvedStyle = this.getOrSetStylesInCache(context, props, styleNames, [...context.parentPath, componentStyleName, ...this.getStyleNames()]);
         } else {
           resolvedStyle = this.resolveStyle(context, props, styleNames);
         }
 
-         const finalStyle = _.merge(resolvedStyle, style);
+         const finalStyle = _.merge({}, resolvedStyle, style);
 
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.resolveConnectedComponentStyle = this.resolveConnectedComponentStyle.bind(this);
@@ -182,9 +182,9 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
       getParentPath() {
 
         if(!this.context.parentPath) {
-          return [componentDisplayName];
+          return [componentStyleName];
         } else {
-          return [...this.context.parentPath, componentDisplayName, ...this.getStyleNames()];
+          return [...this.context.parentPath, componentStyleName, ...this.getStyleNames()];
         }
       }
 
@@ -204,12 +204,12 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         let resolvedStyle = {};
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
           if(nextContext.parentPath) {
-            resolvedStyle = this.getOrSetStylesInCache(nextContext, nextProps, styleNames, [...nextContext.parentPath, componentDisplayName, ...this.getStyleNames()]);
+            resolvedStyle = this.getOrSetStylesInCache(nextContext, nextProps, styleNames, [...nextContext.parentPath, componentStyleName, ...this.getStyleNames()]);
           } else {
             resolvedStyle = this.resolveStyle(nextContext, nextProps, styleNames);
           }
 
-          const finalStyle = _.merge(resolvedStyle, style);
+          const finalStyle = _.merge({}, resolvedStyle, style);
 
           this.setState({
             style: getConcreteStyle(finalStyle),
