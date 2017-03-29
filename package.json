@@ -1,6 +1,6 @@
 {
-  "name": "@shoutem/theme",
-  "version": "0.8.8",
+  "name": "native-base-shoutem-theme",
+  "version": "0.0.0",
   "main": "index.js",
   "description": "Style your components in one place.",
   "dependencies": {
