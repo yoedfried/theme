@@ -145,7 +145,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         const style = props.style;
         let resolvedStyle = {};
         if(context.parentPath) {
-          resolvedStyle = this.getOrSetStylesInCache(context, props, styleNames, [...context.parentPath, componentStyleName, ...this.getStyleNames()]);
+          resolvedStyle = this.getOrSetStylesInCache(context, props, styleNames, [...context.parentPath, componentStyleName, ...this.getStyleNames(props)]);
         } else {
           resolvedStyle = this.resolveStyle(context, props, styleNames);
         }
@@ -164,8 +164,8 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         };
       }
 
-      getStyleNames() {
-        const styleNamesArr = _.map(this.props, (value, key) => {
+      getStyleNames(props) {
+        const styleNamesArr = _.map(props, (value, key) => {
           if(typeof value !== 'object' && value === true) {
             return '.' + key;
           } else {
@@ -184,7 +184,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         if(!this.context.parentPath) {
           return [componentStyleName];
         } else {
-          return [...this.context.parentPath, componentStyleName, ...this.getStyleNames()];
+          return [...this.context.parentPath, componentStyleName, ...this.getStyleNames(this.props)];
         }
       }
 
@@ -204,7 +204,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         let resolvedStyle = {};
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
           if(nextContext.parentPath) {
-            resolvedStyle = this.getOrSetStylesInCache(nextContext, nextProps, styleNames, [...nextContext.parentPath, componentStyleName, ...this.getStyleNames()]);
+            resolvedStyle = this.getOrSetStylesInCache(nextContext, nextProps, styleNames, [...nextContext.parentPath, componentStyleName, ...this.getStyleNames(nextProps)]);
           } else {
             resolvedStyle = this.resolveStyle(nextContext, nextProps, styleNames);
           }
