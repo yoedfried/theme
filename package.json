@@ -8,7 +8,7 @@
     "lodash": "^4.10.1"
   },
   "peerDependencies": {
-    "react": "^15.1.0",
+    "react": ">=15.1.0",
     "react-native": ">=0.28.0"
   },
   "devDependencies": {
@@ -28,36 +28,12 @@
   "license": "BSD-3-Clause",
   "maintainers": [
     {
-      "email": "bruna.andjelic@gmail.com",
-      "name": "bAndelic"
+      "email": "himanshu@geekyants.com",
+      "name": "Himanshu"
     },
     {
-      "email": "domagoj.lazic@shoutem.com",
-      "name": "domlazic"
-    },
-    {
-      "email": "belma.dzi@gmail.com",
-      "name": "morrigan"
-    },
-    {
-      "email": "luka.bracanovic@shoutem.com",
-      "name": "MrBr"
-    },
-    {
-      "email": "ivan@shoutem.com",
-      "name": "SoHotSoup"
-    },
-    {
-      "email": "tomislav.tenodi@shoutem.com",
-      "name": "tenodi"
-    },
-    {
-      "email": "vladimir@shoutem.com",
-      "name": "Vunovati"
-    },
-    {
-      "email": "zeljko@shoutem.com",
-      "name": "zrumenjak"
+      "email": "sanket@geekyants.com",
+      "name": "Sanket"
     }
   ]
 
