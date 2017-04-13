@@ -243,7 +243,7 @@ export default (componentStyleName, componentStyle = {}, mapPropsToStyleNames, o
         return (nextProps.style !== this.props.style) ||
           (nextProps.styleName !== this.props.styleName) ||
           (nextContext.theme !== this.context.theme) ||
-          (nextContext.parentStyle !== this.context.parentStyle) ||
+          !_.isEqual(nextContext.parentPath, this.context.parentPath) ||
           (this.hasStyleNameChanged(nextProps, styleNames));
       }
 
