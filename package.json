@@ -1,6 +1,6 @@
 {
   "name": "native-base-shoutem-theme",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "main": "index.js",
   "description": "Style your components in one place.",
   "dependencies": {
@@ -36,5 +36,4 @@
       "name": "Sanket"
     }
   ]
-
 }
