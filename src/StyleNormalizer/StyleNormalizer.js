@@ -13,7 +13,7 @@ export default class StyleNormalizer {
     this.normalizers = {};
     this.createNormalizers('margin', [HORIZONTAL, VERTICAL, SIDES]);
     this.createNormalizers('padding', [HORIZONTAL, VERTICAL, SIDES]);
-    // this.createNormalizers('border', [SIDES], 'Width');
+    this.createNormalizers('border', [SIDES], 'Width');
   }
 
   createNormalizers(prop, shorthands, suffix = '') {
