@@ -1,7 +1,7 @@
 {
   "name": "native-base-shoutem-theme",
   "version": "0.1.0",
-  "main": "dist/index.js",
+  "main": "index.js",
   "description": "Style your components in one place.",
   "dependencies": {
     "hoist-non-react-statics": "^1.0.5",
