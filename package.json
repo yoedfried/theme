@@ -27,7 +27,6 @@
   "scripts": {
     "compile": "rm -rf dist/* && babel . --out-dir dist --ignore node_modules,_tests_,examples,dist --source-maps",
     "transpile": "npm run compile",
-    "test": "jest",
     "prepublish": "npm run transpile"
   },
   "license": "BSD-3-Clause",
