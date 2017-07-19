@@ -90,8 +90,6 @@ export function resolveComponentStyle(
   parentStyle = {},
   themeCache
 ) {
-  console.log("themeCache", themeCache);
-
   // const mergedStyle = _.merge({},
   //   themeStyle,
   //   parentStyle['*'],
