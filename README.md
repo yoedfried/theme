@@ -155,3 +155,4 @@ It consists of three libraries:
 
 [The BSD License](https://opensource.org/licenses/BSD-3-Clause)
 Copyright (c) 2016-present, [Shoutem](http://shoutem.github.io)
+
