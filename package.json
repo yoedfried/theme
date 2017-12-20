@@ -1,6 +1,6 @@
 {
   "name": "native-base-shoutem-theme",
-  "version": "0.2.2",
+  "version": "0.2.1",
   "main": "index.js",
   "description": "Style your components in one place.",
   "dependencies": {
@@ -25,7 +25,8 @@
     "react-native-mock": "^0.2.5"
   },
   "scripts": {
-    "compile": "rm -rf dist/* && babel . --out-dir dist --ignore node_modules,_tests_,examples,dist --source-maps",
+    "compile":
+      "rm -rf dist/* && babel . --out-dir dist --ignore node_modules,_tests_,examples,dist --source-maps",
     "transpile": "npm run compile",
     "prepublish": "npm run transpile"
   },
