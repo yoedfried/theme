@@ -1,14 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
-import hoistStatics from 'hoist-non-react-statics';
-import * as _ from 'lodash';
-import normalizeStyle from './StyleNormalizer/normalizeStyle';
-import { StyleSheet } from "react-native";
+import React from "react";
+import { PropTypes } from "prop-types";
+import hoistStatics from "hoist-non-react-statics";
+import * as _ from "lodash";
+import normalizeStyle from "./StyleNormalizer/normalizeStyle";
 
 import Theme, { ThemeShape } from "./Theme";
 import { resolveComponentStyle } from "./resolveComponentStyle";
-
-const themeCache = {};
 
 /**
  * Formats and throws an error when connecting component style with the theme.
@@ -33,41 +30,6 @@ function getTheme(context) {
   // Fallback to a default theme if the component isn't
   // rendered in a StyleProvider.
   return context.theme || Theme.getDefaultTheme();
-}
-
-/**
- * Matches any style properties that represent component style variants.
- * Those styles can be applied to the component by using the styleName
- * prop. All style variant property names must start with a single '.'
- * character, e.g., '.variant'.
- *
- * @param propertyName The style property name.
- * @returns {boolean} True if the style property represents a component variant, false otherwise.
- */
-function isStyleVariant(propertyName) {
-  return /^\./.test(propertyName);
-}
-
-/**
- * Matches any style properties that represent style rules that target the
- * component children. Those styles can have two formats, they can either
- * target the components by component name ('shoutem.ui.Text'), or by component
- * name and variant ('shoutem.ui.Text.line-through'). Beside specifying the
- * component name, those styles can also target any component by using the
- * '*' wildcard ('*', or '*.line-through'). The rule to identify those styles is
- * that they have to contain a '.' character in their name or be a '*'.
- *
- * @param propertyName The style property name.
- * @returns {boolean} True if the style property represents a child style, false otherwise.
- */
-function isChildStyle(propertyName) {
-  return /(^[^\.].*\.)|^\*$/.test(propertyName);
-}
-
-function getConcreteStyle(style) {
-  return _.pickBy(style, (value, key) => {
-    return !isStyleVariant(key) && !isChildStyle(key);
-  });
 }
 
 /**
@@ -116,24 +78,18 @@ export default (
       static contextTypes = {
         theme: ThemeShape,
         // The style inherited from the parent
-        // parentStyle: PropTypes.object,
-        parentPath: PropTypes.array
+        parentStyle: PropTypes.object
       };
 
       static childContextTypes = {
         // Provide the parent style to child components
-        // parentStyle: PropTypes.object,
-        // resolveStyle: PropTypes.func,
-        parentPath: PropTypes.array
+        parentStyle: PropTypes.object,
+        resolveStyle: PropTypes.func
       };
 
       static propTypes = {
         // Element style that overrides any other style of the component
-        style: PropTypes.oneOfType([
-          PropTypes.object,
-          PropTypes.number,
-          PropTypes.array
-        ]),
+        style: PropTypes.object,
         // The style variant names to apply to this component,
         // multiple variants may be separated with a space character
         styleName: PropTypes.string,
@@ -153,23 +109,15 @@ export default (
 
       constructor(props, context) {
         super(props, context);
-        // console.log(context.parentPath);
-        const styleNames = this.getStyleNames(props);
-        const style = props.style;
-
-        const finalStyle = this.getFinalStyle(
-          props,
-          context,
-          style,
-          styleNames
-        );
-
+        const styleNames = this.resolveStyleNames(props);
+        const resolvedStyle = this.resolveStyle(context, props, styleNames);
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.resolveConnectedComponentStyle = this.resolveConnectedComponentStyle.bind(
           this
         );
         this.state = {
-          style: finalStyle,
+          style: resolvedStyle.componentStyle,
+          childrenStyle: resolvedStyle.childrenStyle,
           // AddedProps are additional WrappedComponent props
           // Usually they are set trough alternative ways,
           // such as theme style, or trough options
@@ -178,84 +126,26 @@ export default (
         };
       }
 
-      getFinalStyle(props, context, style, styleNames) {
-        let resolvedStyle = {};
-        if (context.parentPath) {
-          resolvedStyle = this.getOrSetStylesInCache(
-            context,
-            props,
-            styleNames,
-            [...context.parentPath, componentStyleName, ...styleNames]
-          );
-        } else {
-          resolvedStyle = this.resolveStyle(context, props, styleNames);
-          themeCache[componentStyleName] = resolvedStyle;
-        }
-
-        const concreteStyle = getConcreteStyle(_.merge({}, resolvedStyle));
-
-        if (_.isArray(style)) {
-          return [concreteStyle, ...style];
-        }
-
-        if (typeof style == "number" || typeof style == "object") {
-          return [concreteStyle, style];
-        }
-
-        return concreteStyle;
-      }
-
-      getStyleNames(props) {
-        const styleNamesArr = _.map(props, (value, key) => {
-          if (typeof value !== "object" && value === true) {
-            return "." + key;
-          } else {
-            return false;
-          }
-        });
-        _.remove(styleNamesArr, (value, index) => {
-          return value === false;
-        });
-
-        return styleNamesArr;
-      }
-
-      getParentPath() {
-        if (!this.context.parentPath) {
-          return [componentStyleName];
-        } else {
-          return [
-            ...this.context.parentPath,
-            componentStyleName,
-            ...this.getStyleNames(this.props)
-          ];
-        }
-      }
-
       getChildContext() {
         return {
-          // parentStyle: this.props.virtual ?
-          //   this.context.parentStyle :
-          //   this.state.childrenStyle,
-          // resolveStyle: this.resolveConnectedComponentStyle,
-          parentPath: this.getParentPath()
+          parentStyle: this.props.virtual
+            ? this.context.parentStyle
+            : this.state.childrenStyle,
+          resolveStyle: this.resolveConnectedComponentStyle
         };
       }
 
       componentWillReceiveProps(nextProps, nextContext) {
-        const styleNames = this.getStyleNames(nextProps);
-        const style = nextProps.style;
+        const styleNames = this.resolveStyleNames(nextProps);
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
-          const finalStyle = this.getFinalStyle(
-            nextProps,
+          const resolvedStyle = this.resolveStyle(
             nextContext,
-            style,
+            nextProps,
             styleNames
           );
-
           this.setState({
-            style: finalStyle,
-            // childrenStyle: resolvedStyle.childrenStyle,
+            style: resolvedStyle.componentStyle,
+            childrenStyle: resolvedStyle.childrenStyle,
             styleNames
           });
         }
@@ -273,7 +163,6 @@ export default (
         } else {
           this._root = component;
         }
-        this.wrappedInstance = this._root;
       }
 
       hasStyleNameChanged(nextProps, styleNames) {
@@ -291,7 +180,7 @@ export default (
           nextProps.style !== this.props.style ||
           nextProps.styleName !== this.props.styleName ||
           nextContext.theme !== this.context.theme ||
-          !_.isEqual(nextContext.parentPath, this.context.parentPath) ||
+          nextContext.parentStyle !== this.context.parentStyle ||
           this.hasStyleNameChanged(nextProps, styleNames)
         );
       }
@@ -316,22 +205,9 @@ export default (
         return addedProps;
       }
 
-      getOrSetStylesInCache(context, props, styleNames, path) {
-        if (themeCache && themeCache[path.join(">")]) {
-          // console.log('**************');
-
-          return themeCache[path.join(">")];
-        } else {
-          const resolvedStyle = this.resolveStyle(context, props, styleNames);
-          if (Object.keys(themeCache).length < 10000) {
-            themeCache[path.join(">")] = resolvedStyle;
-          }
-          return resolvedStyle;
-        }
-      }
-
       resolveStyle(context, props, styleNames) {
-        let parentStyle = {};
+        const { parentStyle } = context;
+        const style = normalizeStyle(props.style);
 
         const theme = getTheme(context);
         const themeStyle = theme.createComponentStyle(
@@ -339,22 +215,12 @@ export default (
           componentStyle
         );
 
-        if (context.parentPath) {
-          parentStyle = themeCache[context.parentPath.join(">")];
-        } else {
-          parentStyle = resolveComponentStyle(
-            componentStyleName,
-            styleNames,
-            themeStyle,
-            parentStyle
-          );
-        }
-
         return resolveComponentStyle(
           componentStyleName,
           styleNames,
           themeStyle,
-          parentStyle
+          parentStyle,
+          style
         );
       }
 
@@ -372,13 +238,6 @@ export default (
       }
 
       render() {
-        // console.log('themeCache', themeCache);
-
-        // if(componentStyleName == 'NativeBase.Text') {
-        //   console.log(this.state.style);
-        //   console.log(themeCache);
-        // }
-
         const { addedProps, style } = this.state;
         return (
           <WrappedComponent
