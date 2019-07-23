@@ -250,7 +250,7 @@ export default (
         };
       }
 
-      componentWillReceiveProps(nextProps, nextContext) {
+      componentcomponentDidUpdate(nextProps, nextContext) {
         const styleNames = this.getStyleNames(nextProps);
         const style = nextProps.style;
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
