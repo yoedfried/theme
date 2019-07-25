@@ -248,7 +248,7 @@ return{
 
 parentPath:this.getParentPath()};
 
-}},{key:'componentWillReceiveProps',value:function componentWillReceiveProps(
+}},{key:'UNSAFE_componentWillReceiveProps',value:function UNSAFE_componentWillReceiveProps(
 
 nextProps,nextContext){
 var styleNames=this.getStyleNames(nextProps);
