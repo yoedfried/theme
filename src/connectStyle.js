@@ -250,7 +250,7 @@ export default (
         };
       }
 
-      componentcomponentDidUpdate(nextProps, nextContext) {
+      UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
         const styleNames = this.getStyleNames(nextProps);
         const style = nextProps.style;
         if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
