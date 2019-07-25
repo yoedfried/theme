@@ -31,7 +31,7 @@ theme:_this.createTheme(props)};return _this;
 return{
 theme:this.state.theme};
 
-}},{key:'UNSAFE_componentWillReceiveProps',value:function UNSAFE_componentWillReceiveProps(
+}},{key:'componentDidUpdate',value:function componentDidUpdate(
 
 nextProps){
 if(nextProps.style!==this.props.style){

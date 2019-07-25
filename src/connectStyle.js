@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import hoistStatics from 'hoist-non-react-statics';
 import * as _ from 'lodash';
+import memoize from 'memoize-one';
+
 import normalizeStyle from './StyleNormalizer/normalizeStyle';
 import { StyleSheet } from "react-native";
 
@@ -162,31 +164,19 @@ export default (
       constructor(props, context) {
         super(props, context);
         // console.log(context.parentPath);
-        const styleNames = this.getStyleNames(props);
-        const style = props.style;
-
-        const finalStyle = this.getFinalStyle(
-          props,
-          context,
-          style,
-          styleNames
-        );
-
         this.setWrappedInstance = this.setWrappedInstance.bind(this);
         this.resolveConnectedComponentStyle = this.resolveConnectedComponentStyle.bind(
           this
         );
         this.state = {
-          style: finalStyle,
           // AddedProps are additional WrappedComponent props
           // Usually they are set trough alternative ways,
           // such as theme style, or trough options
           addedProps: this.resolveAddedProps(),
-          styleNames
         };
       }
 
-      getFinalStyle(props, context, style, styleNames) {
+      getFinalStyle = memoize((props, context, style, styleNames) => {
         let resolvedStyle = {};
         if (context.parentPath) {
           resolvedStyle = this.getOrSetStylesInCache(
@@ -211,7 +201,7 @@ export default (
         }
 
         return concreteStyle;
-      }
+      })
 
       getStyleNames(props) {
         const styleNamesArr = _.map(props, (value, key) => {
@@ -250,25 +240,6 @@ export default (
         };
       }
 
-      UNSAFE_componentWillReceiveProps(nextProps, nextContext) {
-        const styleNames = this.getStyleNames(nextProps);
-        const style = nextProps.style;
-        if (this.shouldRebuildStyle(nextProps, nextContext, styleNames)) {
-          const finalStyle = this.getFinalStyle(
-            nextProps,
-            nextContext,
-            style,
-            styleNames
-          );
-
-          this.setState({
-            style: finalStyle,
-            // childrenStyle: resolvedStyle.childrenStyle,
-            styleNames
-          });
-        }
-      }
-
       setNativeProps(nativeProps) {
         if (this.wrappedInstance.setNativeProps) {
           this.wrappedInstance.setNativeProps(nativeProps);
@@ -282,26 +253,6 @@ export default (
           this._root = component;
         }
         this.wrappedInstance = this._root;
-      }
-
-      hasStyleNameChanged(nextProps, styleNames) {
-        return (
-          mapPropsToStyleNames &&
-          this.props !== nextProps &&
-          // Even though props did change here,
-          // it doesn't necessary means changed props are those which affect styleName
-          !_.isEqual(this.state.styleNames, styleNames)
-        );
-      }
-
-      shouldRebuildStyle(nextProps, nextContext, styleNames) {
-        return (
-          nextProps.style !== this.props.style ||
-          nextProps.styleName !== this.props.styleName ||
-          nextContext.theme !== this.context.theme ||
-          !_.isEqual(nextContext.parentPath, this.context.parentPath) ||
-          this.hasStyleNameChanged(nextProps, styleNames)
-        );
       }
 
       resolveStyleNames(props) {
@@ -387,7 +338,14 @@ export default (
         //   console.log(themeCache);
         // }
 
-        const { addedProps, style } = this.state;
+        const style = this.getFinalStyle(
+          this.props,
+          this.context,
+          this.props.style,
+          this.getStyleNames(this.props)
+        );
+
+        const { addedProps } = this.state;
         return (
           <WrappedComponent
             {...this.props}

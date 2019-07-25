@@ -14,7 +14,9 @@ Object.defineProperty(exports,"__esModule",{value:true});var _extends=Object.ass
 
 
 
-clearThemeCache=clearThemeCache;var _react=require('react');var _react2=_interopRequireDefault(_react);var _propTypes=require('prop-types');var _propTypes2=_interopRequireDefault(_propTypes);var _hoistNonReactStatics=require('hoist-non-react-statics');var _hoistNonReactStatics2=_interopRequireDefault(_hoistNonReactStatics);var _lodash=require('lodash');var _=_interopRequireWildcard(_lodash);var _normalizeStyle=require('./StyleNormalizer/normalizeStyle');var _normalizeStyle2=_interopRequireDefault(_normalizeStyle);var _reactNative=require('react-native');var _Theme=require('./Theme');var _Theme2=_interopRequireDefault(_Theme);var _resolveComponentStyle=require('./resolveComponentStyle');function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}else{var newObj={};if(obj!=null){for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key))newObj[key]=obj[key];}}newObj.default=obj;return newObj;}}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _toConsumableArray(arr){if(Array.isArray(arr)){for(var i=0,arr2=Array(arr.length);i<arr.length;i++){arr2[i]=arr[i];}return arr2;}else{return Array.from(arr);}}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&(typeof call==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var themeCache={};function clearThemeCache(){
+
+
+clearThemeCache=clearThemeCache;var _react=require('react');var _react2=_interopRequireDefault(_react);var _propTypes=require('prop-types');var _propTypes2=_interopRequireDefault(_propTypes);var _hoistNonReactStatics=require('hoist-non-react-statics');var _hoistNonReactStatics2=_interopRequireDefault(_hoistNonReactStatics);var _lodash=require('lodash');var _=_interopRequireWildcard(_lodash);var _memoizeOne=require('memoize-one');var _memoizeOne2=_interopRequireDefault(_memoizeOne);var _normalizeStyle=require('./StyleNormalizer/normalizeStyle');var _normalizeStyle2=_interopRequireDefault(_normalizeStyle);var _reactNative=require('react-native');var _Theme=require('./Theme');var _Theme2=_interopRequireDefault(_Theme);var _resolveComponentStyle=require('./resolveComponentStyle');function _interopRequireWildcard(obj){if(obj&&obj.__esModule){return obj;}else{var newObj={};if(obj!=null){for(var key in obj){if(Object.prototype.hasOwnProperty.call(obj,key))newObj[key]=obj[key];}}newObj.default=obj;return newObj;}}function _interopRequireDefault(obj){return obj&&obj.__esModule?obj:{default:obj};}function _toConsumableArray(arr){if(Array.isArray(arr)){for(var i=0,arr2=Array(arr.length);i<arr.length;i++){arr2[i]=arr[i];}return arr2;}else{return Array.from(arr);}}function _classCallCheck(instance,Constructor){if(!(instance instanceof Constructor)){throw new TypeError("Cannot call a class as a function");}}function _possibleConstructorReturn(self,call){if(!self){throw new ReferenceError("this hasn't been initialised - super() hasn't been called");}return call&&(typeof call==="object"||typeof call==="function")?call:self;}function _inherits(subClass,superClass){if(typeof superClass!=="function"&&superClass!==null){throw new TypeError("Super expression must either be null or a function, not "+typeof superClass);}subClass.prototype=Object.create(superClass&&superClass.prototype,{constructor:{value:subClass,enumerable:false,writable:true,configurable:true}});if(superClass)Object.setPrototypeOf?Object.setPrototypeOf(subClass,superClass):subClass.__proto__=superClass;}var themeCache={};function clearThemeCache(){
 themeCache={};
 }
 
@@ -160,58 +162,46 @@ StyledComponent=function(_React$Component){_inherits(StyledComponent,_React$Comp
 
 
 function StyledComponent(props,context){_classCallCheck(this,StyledComponent);var _this=_possibleConstructorReturn(this,(StyledComponent.__proto__||Object.getPrototypeOf(StyledComponent)).call(this,
-props,context));
-
-var styleNames=_this.getStyleNames(props);
-var style=props.style;
-
-var finalStyle=_this.getFinalStyle(
-props,
-context,
-style,
-styleNames);
-
+props,context));_initialiseProps.call(_this);
 
 _this.setWrappedInstance=_this.setWrappedInstance.bind(_this);
 _this.resolveConnectedComponentStyle=_this.resolveConnectedComponentStyle.bind(_this);
 
 
 _this.state={
-style:finalStyle,
 
 
 
-addedProps:_this.resolveAddedProps(),
-styleNames:styleNames};return _this;
+addedProps:_this.resolveAddedProps()};return _this;
 
-}_createClass(StyledComponent,[{key:'getFinalStyle',value:function getFinalStyle(
+}_createClass(StyledComponent,[{key:'getStyleNames',value:function getStyleNames(
 
-props,context,style,styleNames){
-var resolvedStyle={};
-if(context.parentPath){
-resolvedStyle=this.getOrSetStylesInCache(
-context,
-props,
-styleNames,[].concat(_toConsumableArray(
-context.parentPath),[componentStyleName],_toConsumableArray(styleNames)));
 
-}else{
-resolvedStyle=this.resolveStyle(context,props,styleNames);
-themeCache[componentStyleName]=resolvedStyle;
-}
 
-var concreteStyle=getConcreteStyle(_.merge({},resolvedStyle));
 
-if(_.isArray(style)){
-return[concreteStyle].concat(_toConsumableArray(style));
-}
 
-if(typeof style=="number"||typeof style=="object"){
-return[concreteStyle,style];
-}
 
-return concreteStyle;
-}},{key:'getStyleNames',value:function getStyleNames(
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 props){
 var styleNamesArr=_.map(props,function(value,key){
@@ -248,25 +238,6 @@ return{
 
 parentPath:this.getParentPath()};
 
-}},{key:'UNSAFE_componentWillReceiveProps',value:function UNSAFE_componentWillReceiveProps(
-
-nextProps,nextContext){
-var styleNames=this.getStyleNames(nextProps);
-var style=nextProps.style;
-if(this.shouldRebuildStyle(nextProps,nextContext,styleNames)){
-var finalStyle=this.getFinalStyle(
-nextProps,
-nextContext,
-style,
-styleNames);
-
-
-this.setState({
-style:finalStyle,
-
-styleNames:styleNames});
-
-}
 }},{key:'setNativeProps',value:function setNativeProps(
 
 nativeProps){
@@ -282,26 +253,6 @@ this._root=component._root;
 this._root=component;
 }
 this.wrappedInstance=this._root;
-}},{key:'hasStyleNameChanged',value:function hasStyleNameChanged(
-
-nextProps,styleNames){
-return(
-mapPropsToStyleNames&&
-this.props!==nextProps&&
-
-
-!_.isEqual(this.state.styleNames,styleNames));
-
-}},{key:'shouldRebuildStyle',value:function shouldRebuildStyle(
-
-nextProps,nextContext,styleNames){
-return(
-nextProps.style!==this.props.style||
-nextProps.styleName!==this.props.styleName||
-nextContext.theme!==this.context.theme||
-!_.isEqual(nextContext.parentPath,this.context.parentPath)||
-this.hasStyleNameChanged(nextProps,styleNames));
-
 }},{key:'resolveStyleNames',value:function resolveStyleNames(
 
 props){var
@@ -379,7 +330,7 @@ return this.resolveStyle(this.context,props,styleNames).
 componentStyle;
 }},{key:'render',value:function render()
 
-{var _state=
+{
 
 
 
@@ -387,16 +338,23 @@ componentStyle;
 
 
 
-this.state,addedProps=_state.addedProps,style=_state.style;
+var style=this.getFinalStyle(
+this.props,
+this.context,
+this.props.style,
+this.getStyleNames(this.props));var
+
+
+addedProps=this.state.addedProps;
 return(
 _react2.default.createElement(WrappedComponent,_extends({},
 this.props,
 addedProps,{
 style:style,
-ref:this.setWrappedInstance,__source:{fileName:_jsxFileName,lineNumber:392}})));
+ref:this.setWrappedInstance,__source:{fileName:_jsxFileName,lineNumber:350}})));
 
 
-}}]);return StyledComponent;}(_react2.default.Component);StyledComponent.contextTypes={theme:_Theme.ThemeShape,parentPath:_propTypes2.default.array};StyledComponent.childContextTypes={parentPath:_propTypes2.default.array};StyledComponent.propTypes={style:_propTypes2.default.oneOfType([_propTypes2.default.object,_propTypes2.default.number,_propTypes2.default.array]),styleName:_propTypes2.default.string,virtual:_propTypes2.default.bool};StyledComponent.defaultProps={virtual:options.virtual};StyledComponent.displayName='Styled('+componentDisplayName+')';StyledComponent.WrappedComponent=WrappedComponent;
+}}]);return StyledComponent;}(_react2.default.Component);StyledComponent.contextTypes={theme:_Theme.ThemeShape,parentPath:_propTypes2.default.array};StyledComponent.childContextTypes={parentPath:_propTypes2.default.array};StyledComponent.propTypes={style:_propTypes2.default.oneOfType([_propTypes2.default.object,_propTypes2.default.number,_propTypes2.default.array]),styleName:_propTypes2.default.string,virtual:_propTypes2.default.bool};StyledComponent.defaultProps={virtual:options.virtual};StyledComponent.displayName='Styled('+componentDisplayName+')';StyledComponent.WrappedComponent=WrappedComponent;var _initialiseProps=function _initialiseProps(){var _this2=this;this.getFinalStyle=(0,_memoizeOne2.default)(function(props,context,style,styleNames){var resolvedStyle={};if(context.parentPath){resolvedStyle=_this2.getOrSetStylesInCache(context,props,styleNames,[].concat(_toConsumableArray(context.parentPath),[componentStyleName],_toConsumableArray(styleNames)));}else{resolvedStyle=_this2.resolveStyle(context,props,styleNames);themeCache[componentStyleName]=resolvedStyle;}var concreteStyle=getConcreteStyle(_.merge({},resolvedStyle));if(_.isArray(style)){return[concreteStyle].concat(_toConsumableArray(style));}if(typeof style=="number"||typeof style=="object"){return[concreteStyle,style];}return concreteStyle;});};
 
 
 return(0,_hoistNonReactStatics2.default)(StyledComponent,WrappedComponent);
