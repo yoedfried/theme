@@ -33,10 +33,10 @@ export default class StyleProvider extends React.Component {
     };
   }
 
-  componentDidUpdate(nextProps) {
-    if (nextProps.style !== this.props.style) {
+  componentDidUpdate(prevProps) {
+    if (prevProps.style !== this.props.style) {
       this.setState({
-        theme: this.createTheme(nextProps),
+        theme: this.createTheme(this.props),
       });
     }
   }
